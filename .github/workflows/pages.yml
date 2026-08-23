@@ -38,9 +38,7 @@ jobs:
         run: moon update
 
       - name: Build wasm-gc playground
-        run: |
-          moon build --target wasm-gc --release web/main
-          cp _build/wasm-gc/release/build/web/main/main.wasm web/main.wasm
+        run: sh web/build.sh
 
       - uses: actions/configure-pages@v5
 

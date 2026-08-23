@@ -1,12 +1,13 @@
 // Drive headless Chrome via CDP to interactively test the playground.
-// Usage: node tools/browser_test.mjs
+// Usage: CHROME=/path/to/chrome node tools/browser_test.mjs
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
 import { writeFileSync } from "node:fs";
 
-const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const PORT = 9223;
-const URL_ = "http://localhost:8765/index.html";
+const CHROME = process.env.CHROME ||
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const PORT = Number(process.env.CDP_PORT || 9223);
+const URL_ = process.env.TEST_URL || "http://localhost:8765/index.html";
 
 const chrome = spawn(CHROME, [
   "--headless=new", "--disable-gpu", "--no-sandbox",
@@ -68,7 +69,7 @@ await send("Runtime.enable");
 await send("Page.navigate", { url: URL_ });
 await sleep(1500);
 
-const boot = await evaluate("(() => ({ wasmReady: !!window.wasm, summary: document.getElementById('insp-summary').textContent }))()");
+const boot = await evaluate("(() => ({ wasmReady: !!document.getElementById('insp-summary').textContent && !document.querySelector('main > .summary[style]'), summary: document.getElementById('insp-summary').textContent }))()");
 console.log("boot:", JSON.stringify(boot));
 
 // tab: clean
