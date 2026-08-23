@@ -1,0 +1,69 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "watermark/watermark-toolkit/src/rewrite"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn build_prompt(String, String, lang? : String, original_lang? : String) -> String raise RewriteError
+
+pub fn check_remote(String, allow_remote? : Bool) -> Unit raise RewriteError
+
+pub fn info_to_json(RewriteInfo) -> Json
+
+pub fn lexical_divergence(String, String) -> Double
+
+pub async fn rewrite_text(String, String, String, api_key? : String?, opts~ : RewriteOptions) -> RewriteResult
+
+pub fn select_candidate(String, Array[String]) -> (Int, Array[Double])
+
+// Errors
+pub(all) suberror RewriteError {
+  UnknownStrength(String)
+  RemoteBlocked(String)
+  BadApiResponse(String)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) struct RewriteAttempt {
+  text : String
+  loop_index : Int
+  lexical_divergence : Double
+  passed : Bool?
+  gumbel_score : Double?
+  mut selected : Bool
+}
+
+pub(all) struct RewriteInfo {
+  backend : String
+  model : String
+  base_url : String
+  strength : String
+  temperature : Double
+  prompt_chars : Int
+  input_chars : Int
+  evaluator : String
+  attempts : Array[RewriteAttempt]
+  passed : Bool?
+}
+
+pub(all) struct RewriteOptions {
+  strength : String
+  lang : String
+  original_lang : String
+  temperature : Double
+  candidates : Int
+  max_loops : Int
+  layer_a_after : Bool
+  gumbel_key : String?
+}
+
+pub(all) struct RewriteResult {
+  text : String
+  info : RewriteInfo
+}
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,5 @@
+import {
+  "watermark/watermark-toolkit/src/clean",
+  "watermark/watermark-toolkit/src/gumbel",
+  "watermark/watermark-toolkit/src/rewrite",
+} for "test"

@@ -1,0 +1,53 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "watermark/watermark-toolkit/src/unicodedata"
+
+// Values
+pub fn char_codepoint_hex(Int) -> String
+
+pub fn char_label(Int) -> String
+
+pub fn in_space_homoglyphs(Int) -> Bool
+
+pub fn is_bidi(Int) -> Bool
+
+pub fn is_emoji_glue(Int) -> Bool
+
+pub fn is_format(Int) -> Bool
+
+pub fn is_hangul_filler(Int) -> Bool
+
+pub fn is_khmer_vowel(Int) -> Bool
+
+pub fn is_mongolian_fvs(Int) -> Bool
+
+pub fn is_noncharacter(Int) -> Bool
+
+pub fn is_orthographic_cf(Int) -> Bool
+
+pub fn is_preservable_bidi(Int) -> Bool
+
+pub fn is_private_use(Int) -> Bool
+
+pub fn is_script_joiner(Int) -> Bool
+
+pub fn is_script_letter(Int) -> Bool
+
+pub fn is_strip_explicit(Int) -> Bool
+
+pub fn is_zw_family(Int) -> Bool
+
+pub fn joining_script(Int) -> String?
+
+pub fn latin_confusable_replacement(Int) -> String?
+
+pub fn layout_cf_script(Int) -> (Int, Int)?
+
+pub fn space_replacement(Int) -> String?
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

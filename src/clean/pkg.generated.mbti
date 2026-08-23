@@ -1,0 +1,44 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "watermark/watermark-toolkit/src/clean"
+
+// Values
+pub fn clean_text(String, normalize_spaces? : Bool, aggressive_homoglyphs? : Bool, strip_emoji_glue? : Bool, strip_bidi? : Bool) -> (String, CleanStats)
+
+pub fn human_report(InspectReport) -> String
+
+pub fn inspect_text(String, aggressive? : Bool, strip_emoji_glue? : Bool) -> InspectReport
+
+pub fn report_to_json(InspectReport) -> Json
+
+pub fn stats_to_json(CleanStats) -> Json
+
+// Errors
+
+// Types and methods
+pub struct CharHit {
+  codepoint : Int
+  label : String
+  count : Int
+  kind : String
+  samples : Array[Int]
+}
+
+pub struct CleanStats {
+  input_length : Int
+  output_length : Int
+  removed : Array[(String, Int)]
+  replaced : Array[(String, Int)]
+  removed_count : Int
+  replaced_count : Int
+}
+
+pub struct InspectReport {
+  length : Int
+  suspicious_total : Int
+  hits : Array[CharHit]
+  notes : Array[String]
+}
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,3 @@
+import {
+  "watermark/watermark-toolkit/src/unicodedata" @uc,
+}

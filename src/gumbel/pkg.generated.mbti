@@ -1,0 +1,36 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "watermark/watermark-toolkit/src/gumbel"
+
+// Values
+pub fn detect_text(String, String, window? : Int, threshold? : Double) -> GumbelReport
+
+pub fn detect_token_ids(Array[UInt64], String, window? : Int, threshold? : Double, mask_repeated? : Bool) -> GumbelReport
+
+pub fn hex_to_bytes(String) -> Bytes?
+
+pub fn normalize_key(String) -> Bytes
+
+pub fn report_to_json(GumbelReport) -> Json
+
+pub fn tokenize_simple(String) -> Array[UInt64]
+
+// Errors
+
+// Types and methods
+pub struct GumbelReport {
+  window : Int
+  threshold : Double
+  tokens_total : Int
+  skipped_no_context : Int
+  skipped_repeated : Int
+  counted : Int
+  statistic : Double
+  p_value : Double
+  score : Double
+  is_watermarked : Bool
+  note : String
+}
+
+// Type aliases
+
+// Traits
