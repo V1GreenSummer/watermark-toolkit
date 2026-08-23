@@ -1,0 +1,11 @@
+import {
+  "watermark/watermark-toolkit/src/clean",
+  "watermark/watermark-toolkit/src/gumbel",
+  "watermark/watermark-toolkit/src/rewrite",
+  "moonbitlang/core/argparse",
+  "moonbitlang/core/string",
+  "moonbitlang/x/fs",
+  "moonbitlang/async",
+}
+
+pkgtype(kind: "executable")
