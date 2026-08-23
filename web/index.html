@@ -32,48 +32,138 @@
 <main>
   <!-- ============ INSPECT ============ -->
   <section id="panel-inspect" class="panel active">
+    <div class="intro">
+      <p class="intro-head" data-i18n="introHead">▍这是什么</p>
+      <p data-i18n="introInspect1">检查文本里的「隐形字符」…</p>
+      <p data-i18n="introInspect2">用途:找出可疑字符是什么、在哪、有多少…</p>
+      <p class="callout warn" data-i18n="introInspectCant">只查字符层面的标记…</p>
+    </div>
     <div class="row">
-      <label class="check"><input type="checkbox" id="insp-aggressive"><span data-i18n="aggressive">严格模式(标记拉丁同形字)</span></label>
-      <label class="check"><input type="checkbox" id="insp-glue"><span data-i18n="stripGlue">视承重字符为可疑</span></label>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="insp-aggressive"><span data-i18n="aggressive">严格模式(标记拉丁同形字)</span></label>
+        <p class="opt-help" data-i18n="helpAggressive">把同形异体拉丁字母也标记出来…</p>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="insp-glue"><span data-i18n="stripGlue">视承重字符为可疑</span></label>
+        <p class="opt-help" data-i18n="helpStripGlue">默认跳过 emoji 连接符等承重字符…</p>
+      </div>
     </div>
     <textarea id="insp-input" class="input" rows="7" data-i18n-ph="inputPh" placeholder="在此粘贴文本…"></textarea>
     <div class="actions">
       <button id="insp-run" class="btn btn-primary" data-i18n="runInspect">开始扫描</button>
       <button id="insp-demo" class="btn" data-i18n="loadDemo">载入示例</button>
     </div>
+    <div id="insp-steps" class="steps hidden">
+      <div class="step" data-i18n="inspStep1">扫描文本</div>
+      <div class="step" data-i18n="inspStep2">分类可疑字符</div>
+      <div class="step" data-i18n="inspStep3">定位码点偏移</div>
+      <div class="step" data-i18n="inspStep4">汇总结果</div>
+    </div>
+    <div id="insp-err" class="err hidden"></div>
+    <details class="guide">
+      <summary data-i18n="guideTitle">如何读结果 ▸</summary>
+      <div class="guide-body">
+        <p data-i18n="guideInsp1">每行一个可疑字符:红=疑似,青=提示…</p>
+        <p data-i18n="guideInsp2">「码点偏移」是各次出现的位置…</p>
+        <p data-i18n="guideInsp3">没找到不等于干净…</p>
+        <p data-i18n="guideInsp4">列表下方的说明解释了检查范围…</p>
+      </div>
+    </details>
     <div id="insp-summary" class="summary hidden"></div>
     <div id="insp-hits" class="hits"></div>
   </section>
 
   <!-- ============ CLEAN ============ -->
   <section id="panel-clean" class="panel">
+    <div class="intro">
+      <p class="intro-head" data-i18n="introHead">▍这是什么</p>
+      <p data-i18n="introClean1">按你勾选的规则清洗文本…</p>
+      <p data-i18n="introClean2">用途:发布、粘贴或存档前移除隐形标记…</p>
+      <p class="callout warn" data-i18n="introCleanCant">只作用于字符层面,不影响统计水印…</p>
+    </div>
     <div class="row">
-      <label class="check"><input type="checkbox" id="clean-spaces" checked><span data-i18n="normSpaces">空格同形字归一</span></label>
-      <label class="check"><input type="checkbox" id="clean-homoglyphs"><span data-i18n="aggressive">同形字转 ASCII</span></label>
-      <label class="check"><input type="checkbox" id="clean-glue"><span data-i18n="paranoid">偏执模式(连承重字符也剥离)</span></label>
-      <label class="check"><input type="checkbox" id="clean-bidi"><span data-i18n="stripBidi">剥离方向控制符</span></label>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="clean-spaces" checked><span data-i18n="normSpaces">空格同形字归一</span></label>
+        <p class="opt-help" data-i18n="helpNormSpaces">把各种长得像空格的字符统一成普通空格…</p>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="clean-homoglyphs"><span data-i18n="aggressive">同形字转 ASCII</span></label>
+        <p class="opt-help" data-i18n="helpHomoglyphs">把西里尔 А、全角字母等转成 ASCII…</p>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="clean-glue"><span data-i18n="paranoid">偏执模式(连承重字符也剥离)</span></label>
+        <p class="opt-help" data-i18n="helpParanoid">连 emoji 连接符等承重字符也剥离…</p>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" id="clean-bidi"><span data-i18n="stripBidi">剥离方向控制符</span></label>
+        <p class="opt-help" data-i18n="helpBidi">移除 LTR/RTL 方向控制符…</p>
+      </div>
     </div>
     <textarea id="clean-input" class="input" rows="7" data-i18n-ph="inputPh" placeholder="在此粘贴文本…"></textarea>
     <div class="actions">
       <button id="clean-run" class="btn btn-primary" data-i18n="runClean">开始清洗</button>
       <button id="clean-demo" class="btn" data-i18n="loadDemo">载入示例</button>
     </div>
+    <div id="clean-steps" class="steps hidden">
+      <div class="step" data-i18n="cleanStep1">归一化空格</div>
+      <div class="step" data-i18n="cleanStep2">剥离方向控制符</div>
+      <div class="step" data-i18n="cleanStep3">替换同形字</div>
+      <div class="step" data-i18n="cleanStep4">汇总统计</div>
+    </div>
+    <div id="clean-err" class="err hidden"></div>
+    <details class="guide">
+      <summary data-i18n="guideTitle">如何读结果 ▸</summary>
+      <div class="guide-body">
+        <p data-i18n="guideClean1">「剥离」=字符被删除;「替换」=换成普通字符…</p>
+        <p data-i18n="guideClean2">下方表格逐类列出动了哪些字符…</p>
+        <p data-i18n="guideClean3">输出可直接复制…</p>
+      </div>
+    </details>
     <div id="clean-stats" class="summary hidden"></div>
-    <textarea id="clean-output" class="input output" rows="5" readonly data-i18n-ph="outputPh" placeholder="清洗结果…"></textarea>
+    <div id="clean-breakdown" class="breakdown hidden"></div>
+    <div class="output-row">
+      <textarea id="clean-output" class="input output" rows="5" readonly data-i18n-ph="outputPh" placeholder="清洗结果…"></textarea>
+      <button id="clean-copy" class="btn btn-mini" data-i18n="copy">复制</button>
+    </div>
   </section>
 
   <!-- ============ DETECT ============ -->
   <section id="panel-detect" class="panel">
+    <div class="intro">
+      <p class="intro-head" data-i18n="introHead">▍这是什么</p>
+      <p data-i18n="introDetect1">检测统计类文本水印…</p>
+      <p data-i18n="introDetect2">用途:验证一段文本是否由持有该密钥的模型生成…</p>
+      <p class="callout warn" data-i18n="introDetectCant">密钥、窗口、分词必须与生成时完全一致…</p>
+    </div>
     <div class="row">
-      <div class="field"><label data-i18n="key">密钥</label><input type="text" id="det-key" value="demo-key" class="txt"></div>
-      <div class="field"><label data-i18n="window">窗口 H</label><input type="number" id="det-window" value="4" min="1" max="64" class="txt num"></div>
-      <div class="field"><label data-i18n="threshold">阈值</label><input type="number" id="det-threshold" value="0.000001" step="any" class="txt num"></div>
+      <div class="field"><label data-i18n="key">密钥</label><input type="text" id="det-key" value="demo-key" class="txt">
+        <p class="opt-help" data-i18n="helpKey">生成文本时用的密钥…</p></div>
+      <div class="field"><label data-i18n="window">窗口 H</label><input type="number" id="det-window" value="4" min="1" max="64" class="txt num">
+        <p class="opt-help" data-i18n="helpWindow">生成时的窗口大小 H(默认 4)…</p></div>
+      <div class="field"><label data-i18n="threshold">阈值</label><input type="number" id="det-threshold" value="0.000001" step="any" class="txt num">
+        <p class="opt-help" data-i18n="helpThreshold">p 值低于此值即判定检出…</p></div>
     </div>
     <textarea id="det-input" class="input" rows="7" data-i18n-ph="inputPh" placeholder="在此粘贴文本…"></textarea>
     <div class="actions">
       <button id="det-run" class="btn btn-primary" data-i18n="runDetect">开始检测</button>
       <button id="det-demo" class="btn" data-i18n="loadDemo">载入示例</button>
     </div>
+    <div id="det-steps" class="steps hidden">
+      <div class="step" data-i18n="detStep1">确定性分词</div>
+      <div class="step" data-i18n="detStep2">按密钥重放噪声</div>
+      <div class="step" data-i18n="detStep3">计算统计量</div>
+      <div class="step" data-i18n="detStep4">p 值判定</div>
+    </div>
+    <div id="det-err" class="err hidden"></div>
+    <details class="guide">
+      <summary data-i18n="guideTitle">如何读结果 ▸</summary>
+      <div class="guide-body">
+        <p data-i18n="guideDetect1">p 值是「纯随机文本也出现这个统计量」的概率…</p>
+        <p data-i18n="guideDetect2">得分 = -log₁₀(p)…</p>
+        <p data-i18n="guideDetect3">「检出」只说明:用这把钥匙重放…</p>
+        <p data-i18n="guideDetect4">被跳过的 token 不参与统计…</p>
+      </div>
+    </details>
     <div id="det-result" class="detect-result hidden"></div>
   </section>
 </main>
