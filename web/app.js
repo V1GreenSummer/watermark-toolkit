@@ -1,0 +1,255 @@
+/* wmtool playground — i18n + wasm glue */
+
+// ---------------- i18n ----------------
+const I18N = {
+  zh: {
+    title: "WMTOOL",
+    tagline: "LLM 文本水印工具箱 v0.1",
+    tabInspect: "▚ 检查",
+    tabClean: "▞ 清洗",
+    tabDetect: "▞ 检测",
+    inputPh: "在此粘贴文本…",
+    outputPh: "清洗结果…",
+    aggressive: "严格模式(标记拉丁同形字)",
+    stripGlue: "视承重字符为可疑",
+    normSpaces: "空格同形字归一",
+    paranoid: "偏执模式(连承重字符也剥离)",
+    stripBidi: "剥离方向控制符",
+    loadDemo: "载入示例",
+    runInspect: "开始扫描",
+    runClean: "开始清洗",
+    runDetect: "开始检测",
+    key: "密钥",
+    window: "窗口 H",
+    threshold: "阈值",
+    footer: "仅处理你拥有或获授权的内容 · 检测为同密钥重放,阴性结果不构成证据",
+    scanning: "扫描中…",
+    cleaning: "清洗中…",
+    detecting: "检测中…",
+    empty: "请先输入文本",
+    noHits: "未发现隐形 Unicode 载体。统计水印与像素水印不在本页范围内。",
+    inspSummary: (n, total) => `长度 <b>${n}</b> 字符 · 可疑 <b>${total}</b> 处`,
+    statLine: (label, val) => `${label}: ${val}`,
+    removed: "剥离",
+    replaced: "替换",
+    len: "长度",
+    copied: "已复制",
+    detTokens: (total, counted, skipped) => `token 共 ${total} · 计入 ${counted} · 跳过 ${skipped}`,
+    watermarked: "⚠ 检出水印",
+    notWatermarked: "✓ 未检出水印",
+    pvalue: "p 值",
+    score: "得分 (-log₁₀p)",
+    statistic: "统计量",
+  },
+  en: {
+    title: "WMTOOL",
+    tagline: "LLM text watermark toolkit v0.1",
+    tabInspect: "▚ INSPECT",
+    tabClean: "▞ CLEAN",
+    tabDetect: "▞ DETECT",
+    inputPh: "Paste text here…",
+    outputPh: "Cleaned output…",
+    aggressive: "Aggressive (flag Latin confusables)",
+    stripGlue: "Treat glue as suspicious",
+    normSpaces: "Normalize space homoglyphs",
+    paranoid: "Paranoid (strip glue too)",
+    stripBidi: "Strip bidi controls",
+    loadDemo: "DEMO",
+    runInspect: "SCAN",
+    runClean: "CLEAN",
+    runDetect: "DETECT",
+    key: "KEY",
+    window: "WINDOW H",
+    threshold: "THRESHOLD",
+    footer: "Only for content you own or are authorized to process · detection is same-key replay; a negative result proves nothing",
+    scanning: "Scanning…",
+    cleaning: "Cleaning…",
+    detecting: "Detecting…",
+    empty: "Input some text first",
+    noHits: "No invisible-Unicode carriers found. Statistical and pixel watermarks are out of scope here.",
+    inspSummary: (n, total) => `Length <b>${n}</b> chars · suspicious <b>${total}</b>`,
+    statLine: (label, val) => `${label}: ${val}`,
+    removed: "Removed",
+    replaced: "Replaced",
+    len: "Length",
+    copied: "Copied",
+    detTokens: (total, counted, skipped) => `tokens ${total} · counted ${counted} · skipped ${skipped}`,
+    watermarked: "⚠ WATERMARKED",
+    notWatermarked: "✓ NOT WATERMARKED",
+    pvalue: "p-value",
+    score: "Score (-log₁₀p)",
+    statistic: "Statistic",
+  },
+};
+
+let lang = "zh";
+const t = () => I18N[lang];
+
+const $ = (id) => document.getElementById(id);
+
+function applyLang() {
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const v = t()[el.dataset.i18n];
+    if (typeof v === "string") el.textContent = v;
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
+    el.placeholder = t()[el.dataset.i18nPh];
+  });
+}
+
+$("btn-lang").addEventListener("click", () => {
+  lang = lang === "zh" ? "en" : "zh";
+  $("btn-lang").textContent = lang === "zh" ? "EN_中文" : "中文_EN";
+  applyLang();
+  // re-render cached results so verdict/stat labels follow the new language
+  if (lastDetect) renderDetect(lastDetect);
+  if (lastClean) {
+    const st = lastClean.stats;
+    const s2 = $("clean-stats");
+    s2.innerHTML = [
+      t().statLine(t().len, `${st.input_length} → ${st.output_length}`),
+      t().statLine(t().removed, st.removed_count),
+      t().statLine(t().replaced, st.replaced_count),
+    ].join("\n");
+  }
+});
+
+let lastDetect = null;
+let lastClean = null;
+
+// ---------------- tabs ----------------
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach((x) => x.classList.remove("active"));
+    tab.classList.add("active");
+    $(`panel-${tab.dataset.tab}`).classList.add("active");
+  });
+});
+
+// ---------------- wasm ----------------
+let wasm = null;
+
+async function initWasm() {
+  const compileOptions = { builtins: ["js-string"], importedStringConstants: "_" };
+  // instantiateStreaming needs an application/wasm response; fall back to
+  // a buffer for static hosts with generic MIME types.
+  let instance;
+  try {
+    ({ instance } = await WebAssembly.instantiateStreaming(
+      fetch("main.wasm"), {}, compileOptions,
+    ));
+  } catch {
+    const buf = await (await fetch("main.wasm")).arrayBuffer();
+    ({ instance } = await WebAssembly.instantiate(buf, {}, compileOptions));
+  }
+  wasm = instance.exports;
+}
+
+// ---------------- demos ----------------
+const DEMO = "Vi\u200Bsi\u200Bble \u0410\u0412\u0415 text\uFEFF a\u00A0b \u{1F468}\u200D\u{1F4BB} done\u200C";
+const DEMO_DETECT = "the quick brown fox jumps over the lazy dog and keeps running through the field until the sun goes down behind the hills";
+
+for (const id of ["insp-demo", "clean-demo"]) {
+  $(id).addEventListener("click", () => { $(id.replace("demo", "input")).value = DEMO; });
+}
+$("det-demo").addEventListener("click", () => { $("det-input").value = DEMO_DETECT; });
+
+// ---------------- inspect ----------------
+$("insp-run").addEventListener("click", () => {
+  const text = $("insp-input").value;
+  if (!text) { alert(t().empty); return; }
+  const out = JSON.parse(wasm.inspect_text(JSON.stringify({
+    text,
+    aggressive: $("insp-aggressive").checked,
+    stripEmojiGlue: $("insp-glue").checked,
+  })));
+  const s = $("insp-summary");
+  s.classList.remove("hidden");
+  s.innerHTML = t().inspSummary(out.length, out.suspicious_total);
+  const hits = $("insp-hits");
+  hits.innerHTML = "";
+  if (out.hits.length === 0) {
+    hits.innerHTML = `<div class="summary">${t().noHits}</div>`;
+    return;
+  }
+  for (const h of out.hits) {
+    const el = document.createElement("div");
+    el.className = "hit new";
+    el.innerHTML = `
+      <span class="badge ${h.confidence}">${h.confidence === "probable" ? "PROBABLE" : "INFO"}</span>
+      <span class="cp">${h.codepoint}</span>
+      <span class="label">${h.label}</span>
+      <span class="count">×<b>${h.count}</b></span>`;
+    hits.appendChild(el);
+  }
+});
+
+// ---------------- clean ----------------
+$("clean-run").addEventListener("click", () => {
+  const text = $("clean-input").value;
+  if (!text) { alert(t().empty); return; }
+  const out = JSON.parse(wasm.clean_text(JSON.stringify({
+    text,
+    normalizeSpaces: $("clean-spaces").checked,
+    aggressiveHomoglyphs: $("clean-homoglyphs").checked,
+    stripEmojiGlue: $("clean-glue").checked,
+    stripBidi: $("clean-bidi").checked,
+  })));
+  $("clean-output").value = out.output;
+  lastClean = out;
+  const st = out.stats;
+  const s = $("clean-stats");
+  s.classList.remove("hidden");
+  const lines = [
+    t().statLine(t().len, `${st.input_length} → ${st.output_length}`),
+    t().statLine(t().removed, st.removed_count),
+    t().statLine(t().replaced, st.replaced_count),
+  ];
+  s.innerHTML = lines.join("\n");
+});
+
+// ---------------- detect ----------------
+$("det-run").addEventListener("click", () => {
+  const text = $("det-input").value;
+  if (!text) { alert(t().empty); return; }
+  const out = JSON.parse(wasm.detect_text(JSON.stringify({
+    text,
+    key: $("det-key").value,
+    window: parseInt($("det-window").value, 10) || 4,
+    threshold: parseFloat($("det-threshold").value) || 0.000001,
+  })));
+  lastDetect = out;
+  renderDetect(out);
+});
+
+function renderDetect(out) {
+  const r = $("det-result");
+  r.classList.remove("hidden");
+  const fmt = (x) => (x === null || x === undefined) ? "—" : Number(x).toPrecision(4);
+  r.innerHTML = `
+    <span class="k">${t().pvalue}</span><span class="v"><b>${fmt(out.p_value)}</b></span>
+    <span class="k">${t().statistic}</span><span class="v">${fmt(out.statistic)}</span>
+    <span class="k">${t().score}</span><span class="v">${fmt(out.score)}</span>
+    <span class="k">TOKENS</span><span class="v">${t().detTokens(out.tokens_total, out.counted, out.skipped_no_context + out.skipped_repeated)}</span>
+    <div class="verdict ${out.is_watermarked ? "watermarked" : "clean"}">
+      ${out.is_watermarked ? t().watermarked : t().notWatermarked}
+    </div>`;
+}
+
+// ---------------- boot ----------------
+(async () => {
+  try {
+    await initWasm();
+    $("insp-demo").click(); // preload demo for first impression
+    $("insp-run").click();
+  } catch (e) {
+    console.error(e);
+    const s = document.createElement("div");
+    s.className = "summary";
+    s.style.borderColor = "#ff5d5d";
+    s.textContent = "wasm load failed: " + e.message;
+    document.querySelector("main").prepend(s);
+  }
+})();

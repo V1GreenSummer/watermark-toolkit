@@ -1,0 +1,16 @@
+import {
+  "watermark/watermark-toolkit/src/clean" @clean,
+  "watermark/watermark-toolkit/src/gumbel" @gumbel,
+  "moonbitlang/x/json5" @json5,
+}
+
+pkgtype(kind: "foreign_library")
+
+options(
+  link: {
+    "wasm-gc": {
+      "use-js-builtin-string": true,
+      "imported-string-constants": "_",
+    },
+  },
+)
