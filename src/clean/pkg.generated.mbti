@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "watermark/watermark-toolkit/src/clean"
+package "V1GreenSummer/watermark-toolkit/src/clean"
 
 // Values
 pub fn clean_text(String, normalize_spaces? : Bool, aggressive_homoglyphs? : Bool, strip_emoji_glue? : Bool, strip_bidi? : Bool) -> (String, CleanStats)

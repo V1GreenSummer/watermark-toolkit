@@ -1,7 +1,7 @@
 import {
-  "watermark/watermark-toolkit/src/clean" @clean,
-  "watermark/watermark-toolkit/src/gumbel" @gumbel,
-  "moonbitlang/x/json5" @json5,
+  "V1GreenSummer/watermark-toolkit/src/clean",
+  "V1GreenSummer/watermark-toolkit/src/gumbel",
+  "moonbitlang/x/json5",
 }
 
 pkgtype(kind: "foreign_library")

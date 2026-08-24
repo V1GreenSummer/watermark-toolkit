@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "watermark/watermark-toolkit/src/rewrite"
+package "V1GreenSummer/watermark-toolkit/src/rewrite"
 
 import {
   "moonbitlang/core/debug",

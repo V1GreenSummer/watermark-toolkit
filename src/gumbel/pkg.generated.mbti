@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "watermark/watermark-toolkit/src/gumbel"
+package "V1GreenSummer/watermark-toolkit/src/gumbel"
 
 // Values
 pub fn detect_text(String, String, window? : Int, threshold? : Double) -> GumbelReport

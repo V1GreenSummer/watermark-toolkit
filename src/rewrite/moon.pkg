@@ -1,6 +1,6 @@
 import {
-  "watermark/watermark-toolkit/src/clean",
-  "watermark/watermark-toolkit/src/gumbel",
+  "V1GreenSummer/watermark-toolkit/src/clean",
+  "V1GreenSummer/watermark-toolkit/src/gumbel",
   "moonbitlang/async/http",
   "moonbitlang/core/string",
   "moonbitlang/core/debug",

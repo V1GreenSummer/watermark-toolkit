@@ -3,9 +3,7 @@
 
 ///|
 fn parse_args(args_json : String) -> Json {
-  try {
-    @json5.parse(args_json)
-  } catch {
+  @json5.parse(args_json) catch {
     _ => Json::empty_object()
   }
 }
@@ -39,6 +37,7 @@ fn parse_int(flags_json : Json, key : String, default : Int) -> Int {
   parse_number(flags_json, key, default.to_double()).to_int()
 }
 
+///|
 /// Layer A inspection: in { text, aggressive, stripEmojiGlue },
 /// out the inspect report JSON.
 #export_name("inspect_text")
@@ -53,10 +52,15 @@ pub fn inspect_text(args_json : String) -> String {
     _ => ""
   }
   @clean.report_to_json(
-    @clean.inspect_text(text, aggressive=parse_bool(args, "aggressive"), strip_emoji_glue=parse_bool(args, "stripEmojiGlue")),
+    @clean.inspect_text(
+      text,
+      aggressive=parse_bool(args, "aggressive"),
+      strip_emoji_glue=parse_bool(args, "stripEmojiGlue"),
+    ),
   ).stringify()
 }
 
+///|
 /// Layer A cleaning: in { text, normalizeSpaces, aggressiveHomoglyphs,
 /// stripEmojiGlue, stripBidi }, out { output, stats } JSON.
 #export_name("clean_text")
@@ -83,6 +87,7 @@ pub fn clean_text(args_json : String) -> String {
   Json::object(root).stringify()
 }
 
+///|
 /// keyed-Gumbel detection: in { text, key, window, threshold },
 /// out the detector report JSON.
 #export_name("detect_text")
@@ -116,4 +121,3 @@ pub fn detect_text(args_json : String) -> String {
   )
   @gumbel.report_to_json(report).stringify()
 }
-

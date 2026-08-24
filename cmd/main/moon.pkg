@@ -1,7 +1,7 @@
 import {
-  "watermark/watermark-toolkit/src/clean",
-  "watermark/watermark-toolkit/src/gumbel",
-  "watermark/watermark-toolkit/src/rewrite",
+  "V1GreenSummer/watermark-toolkit/src/clean",
+  "V1GreenSummer/watermark-toolkit/src/gumbel",
+  "V1GreenSummer/watermark-toolkit/src/rewrite",
   "moonbitlang/core/argparse",
   "moonbitlang/core/string",
   "moonbitlang/x/fs",

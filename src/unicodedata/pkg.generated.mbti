@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "watermark/watermark-toolkit/src/unicodedata"
+package "V1GreenSummer/watermark-toolkit/src/unicodedata"
 
 // Values
 pub fn char_codepoint_hex(Int) -> String
