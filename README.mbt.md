@@ -73,3 +73,4 @@ reference/        上游参考源码副本（对拍用）
 
 - [watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover)（MIT）— 上游实现与规则设计
 - Kirchenbauer et al., *A Watermark for Large Language Models*；Aaronson keyed-Gumbel 方案；ARBI 技术报告 — 算法背景
+- `reference/watermark_processor.py`、`reference/extended_watermark_processor.py`、`reference/normalizers.py` 来自论文官方实现（[kuleshov-group/watermark](https://github.com/kuleshov-group/watermark)，Apache-2.0，版权头保留），仅作对拍参考

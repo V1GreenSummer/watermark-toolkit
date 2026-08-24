@@ -3,6 +3,12 @@ MIT License
 Copyright (c) 2026 watermark-toolkit contributors
 Portions Copyright (c) 2025 Guillaume Meyer (watermarks-remover, MIT)
 
+Third-party reference code under reference/watermark_processor.py,
+reference/extended_watermark_processor.py and reference/normalizers.py is
+Copyright 2023 Authors of "A Watermark for Large Language Models" and is
+licensed under the Apache License, Version 2.0 — see the license headers in
+those files.
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
