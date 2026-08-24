@@ -31,5 +31,5 @@ jobs:
       - name: moon fmt --check
         run: moon fmt --check
 
-      - name: moon build (native)
-        run: moon build
+      - name: moon build (native CLI)
+        run: moon build cmd/main
